@@ -4,34 +4,39 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 🔐 Seguridad
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-cambiar-en-produccion")
-DEBUG = "RENDER" not in os.environ 
+# ======================
+# 🔐 SEGURIDAD
+# ======================
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-ALLOWED_HOSTS = []
+DEBUG = "RENDER" not in os.environ
+
+ALLOWED_HOSTS = ["*"]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-else:
-    ALLOWED_HOSTS = ["*"]
 
-# 📦 Apps Instaladas
+# ======================
+# 📦 APLICACIONES
+# ======================
 INSTALLED_APPS = [
-    "cloudinary_storage",    # ☁️ Debe ir ANTES de staticfiles para los Media
+    "cloudinary_storage",       # MEDIA (imágenes)
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles", # 📁 Maneja el CSS del Admin
+    "django.contrib.staticfiles",  # STATIC (admin)
     "cloudinary",
     "perfil",
 ]
 
-# ⚙️ Middleware
+# ======================
+# ⚙️ MIDDLEWARE
+# ======================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware", # 🚀 FUNDAMENTAL: Debe ir aquí
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # 🔑 STATIC EN PRODUCCIÓN
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -42,10 +47,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "hoja_de_vida.urls"
 
+# ======================
+# 🎨 TEMPLATES
+# ======================
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')], # Asegúrate de que apunte a tus carpetas
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -60,7 +68,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "hoja_de_vida.wsgi.application"
 
-# 🗄️ Base de Datos
+# ======================
+# 🗄️ BASE DE DATOS
+# ======================
 DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
@@ -68,7 +78,9 @@ DATABASES = {
     )
 }
 
-# 🔑 Validadores de Contraseña
+# ======================
+# 🔑 CONTRASEÑAS
+# ======================
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -76,37 +88,39 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# 🌍 Idioma y Zona Horaria
+# ======================
+# 🌍 IDIOMA / ZONA
+# ======================
 LANGUAGE_CODE = "es-ec"
 TIME_ZONE = "America/Guayaquil"
 USE_I18N = True
 USE_TZ = True
 
-# 📁 ARCHIVOS ESTÁTICOS (CSS, JS) - ESTA ES LA PARTE DEL ERROR
+# ======================
+# 📁 ARCHIVOS ESTÁTICOS (ADMIN)
+# ======================
 STATIC_URL = "/static/"
-# Carpeta donde Django recolectará todo para producción
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Carpetas donde Django buscará archivos estáticos adicionales
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# Almacenamiento optimizado para Render con WhiteNoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# 🖼️ CONFIGURACIÓN DE CLOUDINARY (MEDIA)
+# ❌ NO STATICFILES_DIRS EN PRODUCCIÓN
+
+# ======================
+# 🖼️ MEDIA (CLOUDINARY)
+# ======================
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
 }
 
-# Solo las fotos subidas van a Cloudinary, el CSS se queda con WhiteNoise
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
 
+# ======================
+# 🧱 OTROS
+# ======================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+X_FRAME_OPTIONS = "SAMEORIGIN"
