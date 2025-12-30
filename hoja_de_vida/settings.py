@@ -1,41 +1,39 @@
-from pathlib import Path
 import os
-import dj_database_url # [cite: 356]
+import dj_database_url
+from pathlib import Path
 
-# Construye rutas dentro del proyecto así: BASE_DIR / 'subdir'.
+# Directorio Base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 🔐 Seguridad
-# En producción, Render proporcionará la SECRET_KEY vía variable de entorno [cite: 315]
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-cambiar-en-produccion")
-
-# DEBUG será False automáticamente al estar en Render [cite: 327, 330]
-DEBUG = "RENDER" not in os.environ 
+DEBUG = "RENDER" not in os.environ
 
 ALLOWED_HOSTS = []
-# Captura la dirección que el servidor de la nube otorga [cite: 341, 343]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
-    # Para desarrollo local
     ALLOWED_HOSTS = ["*"]
 
-# 📦 Apps Instaladas
+# 📦 Apps Instaladas - El orden aquí es CRÍTICO para Cloudinary
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic", #
     "django.contrib.staticfiles",
-    "perfil",
+    "cloudinary_storage",            # Debe ir antes de staticfiles
+    "cloudinary",
+    "perfil",                        # Asegurar que la carpeta se llame 'perfil'
 ]
 
 # ⚙️ Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware", # Necesario para archivos estáticos [cite: 374]
+    "whitenoise.middleware.WhiteNoiseMiddleware", #
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -49,7 +47,7 @@ ROOT_URLCONF = "hoja_de_vida.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -64,22 +62,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "hoja_de_vida.wsgi.application"
 
-# 🗄️ Base de Datos configurada para PostgreSQL en la nube [cite: 356, 359]
+# 🗄️ Base de Datos (Segura con Variables de Entorno)
 DATABASES = {
     "default": dj_database_url.config(
-        # Si no existe DATABASE_URL (local), usa SQLite
-        default='postgresql://postgresql_bd_ck9d_user:ZtbFEcfk7sjJtsx2bITZrvd7CZ7TVPty@dpg-d4v41uqli9vc73dghqlg-a/postgresql_bd_ck9d',
+        default=os.environ.get('DATABASE_URL'), #
         conn_max_age=600,
     )
 }
-
-# 🔑 Validadores de Contraseña
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
 
 # 🌍 Idioma y Zona Horaria
 LANGUAGE_CODE = "es-ec"
@@ -87,16 +76,30 @@ TIME_ZONE = "America/Guayaquil"
 USE_I18N = True
 USE_TZ = True
 
-# 📁 Archivos Estáticos (CSS, JS) [cite: 372, 374]
+# 📁 Configuración de Cloudinary (Credenciales desde Render)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# 📁 Manejo de Archivos (Estáticos y Multimedia)
 STATIC_URL = "/static/"
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = "/media/"
+
+# Configuración de Almacenamiento Django 4.2+
+STORAGES = {
+    "default": {
+        # RawMedia permite subir PDFs e Imágenes sin errores 401 de permisos
+        "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", #
+    },
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 🖼️ Imágenes (MEDIA)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+# Permite cargar el PDF dentro de la web
 X_FRAME_OPTIONS = 'SAMEORIGIN'
