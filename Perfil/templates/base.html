@@ -43,11 +43,11 @@
         
         /* --- NUEVOS ESTILOS PARA BOTÓN ADMIN --- */
         .main-content {
-            position: relative; /* Para que el botón se posicione respecto a este contenedor */
+            position: relative;
         }
         .btn-admin {
             position: absolute;
-            top: 30px; /* Ajustado para que alinee con el padding del contenedor */
+            top: 30px;
             right: 40px;
             background-color: var(--rosa-fuerte);
             color: white;
@@ -88,7 +88,11 @@
                 {% endif %}
             </div>
 
-            <h4 class="mb-1" style="font-family: 'Playfair Display'; color: var(--rosa-fuerte);">{{ perfil.nombres }}</h4>
+            <!-- 🔹 AQUÍ ESTÁ LA ÚNICA CORRECCIÓN -->
+            <h4 class="mb-1" style="font-family: 'Playfair Display'; color: var(--rosa-fuerte);">
+                {{ perfil.nombres }} {{ perfil.apellidos }}
+            </h4>
+
             <p class="small text-muted">{{ perfil.descripcionperfil }}</p>
             <hr>
 
