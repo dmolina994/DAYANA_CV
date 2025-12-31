@@ -85,15 +85,19 @@ def reconocimientos(request):
         'reconocimientos': reconocimientos,
         'perfil': perfil
     })
+    
+    
 
-# ---------- GARAGE ----------
 def garage(request):
     perfil = get_active_profile()
-    ventas_garage = VentaGarage.objects.filter(
+
+    garage_items = VentaGarage.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
+
     return render(request, 'garage.html', {
-        'ventas_garage': ventas_garage,
+        'garage_items': garage_items,
         'perfil': perfil
     })
+
