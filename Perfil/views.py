@@ -51,11 +51,11 @@ def productos_laborales(request):
 
 def cursos(request):
     perfil = get_active_profile()
-    datos = CursoRealizado.objects.filter(
+    cursos = CursoRealizado.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'cursos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'cursos.html', {'cursos': cursos, 'perfil': perfil})
 
 def reconocimientos(request):
     perfil = get_active_profile()
