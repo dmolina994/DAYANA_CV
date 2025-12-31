@@ -27,27 +27,36 @@ def home(request):
 
 def experiencia(request):
     perfil = get_active_profile()
-    datos = ExperienciaLaboral.objects.filter(
+    experiencias = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'experiencia.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'experiencia.html', {
+        'experiencias': experiencias,
+        'perfil': perfil
+    })
 
 def productos_academicos(request):
     perfil = get_active_profile()
-    datos = ProductoAcademico.objects.filter(
+    productos_academicos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'productos_academicos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'productos_academicos.html', {
+        'productos_academicos': productos_academicos,
+        'perfil': perfil
+    })
 
 def productos_laborales(request):
     perfil = get_active_profile()
-    datos = ProductoLaboral.objects.filter(
+    productos_laborales = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     ).order_by('-fechaproducto')
-    return render(request, 'productos_laborales.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'productos_laborales.html', {
+        'productos_laborales': productos_laborales,
+        'perfil': perfil
+    })
 
 def cursos(request):
     perfil = get_active_profile()
@@ -55,20 +64,29 @@ def cursos(request):
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'cursos.html', {'cursos': cursos, 'perfil': perfil})
+    return render(request, 'cursos.html', {
+        'cursos': cursos,
+        'perfil': perfil
+    })
 
 def reconocimientos(request):
     perfil = get_active_profile()
-    datos = Reconocimiento.objects.filter(
+    reconocimientos = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     ).order_by('-fechareconocimiento')
-    return render(request, 'reconocimientos.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'reconocimientos.html', {
+        'reconocimientos': reconocimientos,
+        'perfil': perfil
+    })
 
 def garage(request):
     perfil = get_active_profile()
-    datos = VentaGarage.objects.filter(
+    garage = VentaGarage.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
-    return render(request, 'garage.html', {'datos': datos, 'perfil': perfil})
+    return render(request, 'garage.html', {
+        'garage': garage,
+        'perfil': perfil
+    })
