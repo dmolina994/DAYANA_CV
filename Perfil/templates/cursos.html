@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    /* Estilos para los botones morados sin alterar la lógica de Django */
+    .btn-morado {
+        background-color: #8e44ad; /* Morado elegante */
+        border-color: #8e44ad;
+        color: white;
+    }
+
+    .btn-morado:hover {
+        background-color: #7d3c98;
+        border-color: #7d3c98;
+        color: white;
+    }
+
+    .btn-outline-morado {
+        color: #8e44ad;
+        border-color: #8e44ad;
+    }
+
+    .btn-outline-morado:hover {
+        background-color: #8e44ad;
+        color: white;
+    }
+</style>
+
 <main class="container-fluid py-5 px-4">
     <h1 class="mb-4 text-center">🎓 Cursos Realizados</h1>
     <p class="text-center mb-5" style="color: black;">
@@ -11,10 +36,10 @@
         <div class="col-md-8" style="max-height: 80vh; overflow-y: auto;">
             {% for curso in cursos %}
             <div class="card mb-4 shadow-sm border-start border-4 curso-card" 
-                 style="transition: transform 0.2s; border-color: #b19cd9 !important;">
+                 style="transition: transform 0.2s; border-color: #8e44ad !important;">
                 
                 <div class="card-body">
-                    <h5 class="card-title fw-bold">{{ curso.nombrecurso }}</h5>
+                    <h5 class="card-title fw-bold" style="color: #8e44ad;">{{ curso.nombrecurso }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
                         {{ curso.entidadpatrocinadora }} · {{ curso.fechafin|date:"Y" }}
                     </h6>
@@ -30,16 +55,16 @@
                     </div>
 
                     <p class="card-text mt-3 text-end" style="color: black;">
-                        <span class="badge bg-secondary">Duración: {{ curso.totalhoras }} horas.</span>
+                        <span class="badge" style="background-color: #b19cd9;">Duración: {{ curso.totalhoras }} horas.</span>
                     </p>
 
                     {% if curso.rutacertificado %}
                     <div class="mt-2 text-center">
-                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download>
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-morado shadow-sm" download>
                             <i class="bi bi-download"></i> Descargar
                         </a>
                         
-                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank">
+                        <a href="{{ curso.rutacertificado.url }}" class="btn btn-sm btn-link" style="color: #8e44ad;" target="_blank">
                             Abrir en pestaña nueva
                         </a>
                     </div>
@@ -53,7 +78,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-dark">Volver al inicio</a>
+        <a href="{% url 'home' %}" class="btn btn-outline-morado">Volver al inicio</a>
     </div>
 </main>
 {% endblock %}

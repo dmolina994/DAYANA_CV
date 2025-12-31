@@ -1,6 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    /* Estilos para mantener la coherencia visual morada */
+    .btn-morado {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+        color: white;
+    }
+
+    .btn-morado:hover {
+        background-color: #7d3c98;
+        border-color: #7d3c98;
+        color: white;
+    }
+
+    .text-morado {
+        color: #8e44ad !important;
+    }
+
+    .btn-outline-morado {
+        color: #8e44ad;
+        border-color: #8e44ad;
+    }
+
+    .btn-outline-morado:hover {
+        background-color: #8e44ad;
+        color: white;
+    }
+</style>
+
 <main class="container py-5">
 
     <h1 class="mb-4 text-center">
@@ -16,7 +45,7 @@
         <div class="col-12 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title text-primary">
+                    <h5 class="card-title fw-bold text-morado">
                         {{ exp.cargodesempenado }}
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -38,7 +67,7 @@
                         <strong>Funciones:</strong> {{ exp.descripcionfunciones }}
                     </p>
 
-                    <div class="mt-3 p-3 bg-light rounded" style="font-size: 0.9em; border-left: 4px solid #0d6efd;">
+                    <div class="mt-3 p-3 bg-light rounded" style="font-size: 0.9em; border-left: 4px solid #8e44ad;">
                         <p class="mb-1"><strong>Contacto:</strong> {{ exp.nombrecontactoempresarial }}</p>
                         <p class="mb-1"><strong>Teléfono:</strong> {{ exp.telefonocontactoempresarial }}</p>
                         <p class="mb-0"><strong>Email:</strong> {{ exp.emailempresa }}</p>
@@ -46,7 +75,7 @@
 
                     {% if exp.rutacertificado %}
                     <div class="mt-3">
-                        <a href="{{ exp.rutacertificado.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                        <a href="{{ exp.rutacertificado.url }}" class="btn btn-sm btn-outline-morado" target="_blank">
                             Ver Certificado Laboral
                         </a>
                     </div>
@@ -62,7 +91,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-dark">Volver al inicio</a>
+        <a href="{% url 'home' %}" class="btn btn-outline-morado">Volver al inicio</a>
     </div>
 </main>
 {% endblock %}

@@ -1,6 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    /* Estilos para mantener la coherencia visual morada */
+    .btn-morado {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+        color: white;
+    }
+
+    .btn-morado:hover {
+        background-color: #7d3c98;
+        border-color: #7d3c98;
+        color: white;
+    }
+
+    .text-morado {
+        color: #8e44ad !important;
+    }
+
+    .curso-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
 <main class="container-fluid py-5 px-4">
     <h1 class="text-center mb-4">🏅 Reconocimientos Académicos</h1>
 
@@ -8,10 +32,10 @@
         <div class="col-md-8" style="max-height: 80vh; overflow-y: auto;">
             {% for reconocimiento in reconocimientos %}
             <div class="card mb-4 shadow-sm curso-card" 
-                 style="transition: 0.2s; border-top: 4px solid #b19cd9;">
+                 style="transition: 0.2s; border-top: 4px solid #8e44ad;">
                 
                 <div class="card-body">
-                    <h5 class="card-title text-primary">{{ reconocimiento.tiporeconocimiento }}</h5>
+                    <h5 class="card-title fw-bold text-morado">{{ reconocimiento.tiporeconocimiento }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
                         {{ reconocimiento.entidadpatrocinadora }} 
                         {% if reconocimiento.fechareconocimiento %}
@@ -25,10 +49,10 @@
 
                     {% if reconocimiento.rutacertificado %}
                     <div class="mt-3 text-center">
-                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-primary shadow-sm" download>
+                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-morado shadow-sm" download>
                             <i class="bi bi-download"></i> Descargar
                         </a>
-                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-link" target="_blank">
+                        <a href="{{ reconocimiento.rutacertificado.url }}" class="btn btn-sm btn-link text-morado" target="_blank">
                             Abrir en pestaña nueva
                         </a>
                     </div>

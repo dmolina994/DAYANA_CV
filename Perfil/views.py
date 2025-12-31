@@ -12,6 +12,7 @@ from .models import (
 def get_active_profile():
     return DatosPersonales.objects.filter(perfilactivo=1).first()
 
+# ---------- HOME ----------
 def home(request):
     perfil = get_active_profile()
     context = {
@@ -25,6 +26,7 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+# ---------- EXPERIENCIA ----------
 def experiencia(request):
     perfil = get_active_profile()
     experiencias = ExperienciaLaboral.objects.filter(
@@ -36,6 +38,7 @@ def experiencia(request):
         'perfil': perfil
     })
 
+# ---------- PRODUCTOS ACADÉMICOS ----------
 def productos_academicos(request):
     perfil = get_active_profile()
     productos_academicos = ProductoAcademico.objects.filter(
@@ -47,6 +50,7 @@ def productos_academicos(request):
         'perfil': perfil
     })
 
+# ---------- PRODUCTOS LABORALES ----------
 def productos_laborales(request):
     perfil = get_active_profile()
     productos_laborales = ProductoLaboral.objects.filter(
@@ -58,6 +62,7 @@ def productos_laborales(request):
         'perfil': perfil
     })
 
+# ---------- CURSOS ----------
 def cursos(request):
     perfil = get_active_profile()
     cursos = CursoRealizado.objects.filter(
@@ -69,6 +74,7 @@ def cursos(request):
         'perfil': perfil
     })
 
+# ---------- RECONOCIMIENTOS ----------
 def reconocimientos(request):
     perfil = get_active_profile()
     reconocimientos = Reconocimiento.objects.filter(
@@ -80,13 +86,14 @@ def reconocimientos(request):
         'perfil': perfil
     })
 
+# ---------- GARAGE ----------
 def garage(request):
     perfil = get_active_profile()
-    garage = VentaGarage.objects.filter(
+    ventas_garage = VentaGarage.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True
     )
     return render(request, 'garage.html', {
-        'garage': garage,
+        'ventas_garage': ventas_garage,
         'perfil': perfil
     })
