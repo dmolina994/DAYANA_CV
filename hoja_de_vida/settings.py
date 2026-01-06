@@ -5,100 +5,109 @@ from pathlib import Path
 # Directorio Base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 🔐 Seguridad
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-cambiar-en-produccion")
-DEBUG = "RENDER" not in os.environ
+# Seguridad
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ww9j7_=ac%06&-rvo27ci!8f)0^2)+o-m8@1+i^bxys)=%l0@2')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
-RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+# Render Hostnames
+ALLOWED_HOSTS = ['*']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-else:
-    ALLOWED_HOSTS = ["*"]
 
-# 📦 Apps Instaladas - El orden aquí es CRÍTICO para Cloudinary
+# Aplicaciones - El orden de cloudinary_storage es importante
 INSTALLED_APPS = [
-    "cloudinary_storage",  # 1. Debe ir ANTES de staticfiles
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "whitenoise.runserver_nostatic", # 2. Mantener aquí para desarrollo
-    "django.contrib.staticfiles",    # 3. Cloudinary lo necesita arriba
-    "cloudinary",
-    "perfil",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'whitenoise.runserver_nostatic', 
+    'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
+    'Perfil',
 ]
 
-# ⚙️ Middleware
+# Middlewares
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware", #
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = "hoja_de_vida.urls"
+ROOT_URLCONF = 'ProyectoHojaDeVida.urls'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'], 
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "hoja_de_vida.wsgi.application"
+WSGI_APPLICATION = 'ProyectoHojaDeVida.wsgi.application'
 
-# 🗄️ Base de Datos (Segura con Variables de Entorno)
+# BASE DE DATOS
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'), #
-        conn_max_age=600,
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
     )
 }
 
-# 🌍 Idioma y Zona Horaria
-LANGUAGE_CODE = "es-ec"
-TIME_ZONE = "America/Guayaquil"
-USE_I18N = True
-USE_TZ = True
+# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
-# 📁 Configuración de Cloudinary (Credenciales desde Render)
+# --- CONFIGURACIÓN DE CLOUDINARY ---
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
-# 📁 Manejo de Archivos (Estáticos y Multimedia)
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-MEDIA_URL = "/media/"
+# Verificamos si las variables existen para activar el almacenamiento en la nube
+if CLOUDINARY_STORAGE['CLOUD_NAME'] and CLOUDINARY_STORAGE['API_KEY'] and CLOUDINARY_STORAGE['API_SECRET']:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
-# Configuración de Almacenamiento Django 4.2+
+# Configuración de Storages para Django 4.2+
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
+        "BACKEND": DEFAULT_FILE_STORAGE if 'DEFAULT_FILE_STORAGE' in locals() else "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # Cambia CompressedManifest por el básico para probar
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage", 
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Permite cargar el PDF dentro de la web
+# Idioma y Hora
+LANGUAGE_CODE = 'es-ec'
+TIME_ZONE = 'America/Guayaquil' 
+USE_I18N = True
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Permite cargar PDFs en iframes
 X_FRAME_OPTIONS = 'SAMEORIGIN'
