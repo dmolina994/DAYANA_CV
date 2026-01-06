@@ -18,16 +18,16 @@ else:
 
 # 📦 Apps Instaladas - El orden aquí es CRÍTICO para Cloudinary
 INSTALLED_APPS = [
+    "cloudinary_storage",  # 1. Debe ir ANTES de staticfiles
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "whitenoise.runserver_nostatic", #
-    "django.contrib.staticfiles",
-    "cloudinary_storage",            # Debe ir antes de staticfiles
+    "whitenoise.runserver_nostatic", # 2. Mantener aquí para desarrollo
+    "django.contrib.staticfiles",    # 3. Cloudinary lo necesita arriba
     "cloudinary",
-    "perfil",                        # Asegurar que la carpeta se llame 'perfil'
+    "perfil",
 ]
 
 # ⚙️ Middleware
@@ -91,14 +91,13 @@ MEDIA_URL = "/media/"
 # Configuración de Almacenamiento Django 4.2+
 STORAGES = {
     "default": {
-        # RawMedia permite subir PDFs e Imágenes sin errores 401 de permisos
         "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", #
+        # Cambia CompressedManifest por el básico para probar
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage", 
     },
 }
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Permite cargar el PDF dentro de la web
